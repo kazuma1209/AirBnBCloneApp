@@ -1,0 +1,139 @@
+<div id="main">
+  <div id="left">
+    <!--サーチパネル-->
+    <div class="row">
+      <br/>
+      <div class="collapse" id="collapsePanel">
+
+        <%=search_form_for @search,url: search_path do |f|%>
+
+          <div class="row">
+            <div class="col-md-8">
+              <label>価格帯</label>
+            </div>
+            <div class="col-md-2">
+              <label>最低価格</label>
+              <%=f.text_field :price_gteq,class:"form-control" %>
+            </div>
+            <div class="col-md-2">
+              <label>最大価格</label>
+              <%=f.text_field :price_lteq,class:"form-control" %>
+            </div>
+          </div>
+          <hr/>
+
+          <div class="row">
+            <div class="col-md-6">
+              <%=text_field_tag :start_date,params[:start_date],readonly: true,placeholder: "チェックイン日",class:"form-control datepicker" %>
+            </div>
+            <div class="col-md-6">
+              <%=text_field_tag :end_date,params[:end_date],readonly: true,placeholder: "チェックアウト日",class:"form-control datepicker"%>
+            </div>
+          </div>
+          <hr/>
+
+          <div class="row">
+            <div class="col-md-4">
+              <%=check_box_tag "q[room_type_eq_any][]","Entire" %>貸し切り
+            </div>
+            <div class="col-md-4">
+              <%=check_box_tag "q[room_type_eq_any][]","Private" %>個室
+            </div>
+            <div class="col-md-4">
+              <%=check_box_tag "q[room_type_eq_any][]","Shared" %>シェアルーム
+            </div>
+          </div>
+          <hr/>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group select">
+                <label>人数</label>
+                <%= f.select :accommodate_gteq, [["1人", 1], ["2人", 2], ["3人", 3], ["4人以上", 4]],id: "accommodate", prompt: "選択", class: "form-control" %>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group select">
+                <label>ベッドルーム</label>
+                <%= f.select :bed_room_gteq, [["1部屋", 1], ["2部屋", 2], ["3部屋", 3], ["4部屋以上", 4]],id: "bed_room", prompt: "選択", class: "form-control" %>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group select">
+                <label>バスルーム</label>
+                <%= f.select :bath_room_gteq, [["1個", 1], ["2個", 2], ["3個", 3], ["4個以上", 4]],id: "bath_rooms", prompt: "選択", class: "form-control" %>
+            </div>
+          </div>
+          <hr/>
+
+          <div class="row">
+            <div class="col-md-4">
+              <%=check_box_tag "q[is_tv_eq]",true %>テレビ
+            </div>
+            <div class="col-md-4">
+              <%=check_box_tag "q[is_kitchen_eq]",true %>キッチン
+            </div>
+            <div class="col-md-4">
+              <%=check_box_tag "q[is_internet_eq]",true %>インターネット
+            </div>
+            <div class="col-md-4">
+              <%=check_box_tag "q[is_heating_eq]",true %>暖房
+            </div>
+            <div class="col-md-4">
+              <%=check_box_tag "q[is_air_eq]",true %>エアコン
+            </div>
+          </div>
+          <hr/>
+
+          <div class="row text-center">
+            <%=f.submit "検索",class:"btn btn-form" %>
+          </div>
+
+        <% end %>
+
+      </div>
+      <br/>
+
+      <div class="row">
+        <% @arrRooms.each do |room| %>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading preview">
+                <%= image_tag room.cover_photo(:medium) %>
+              </div>
+              <div class="panel-body">
+                <%= link_to room.listing_name,room %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="right">
+    <!--グーグルマップ-->
+  </div>
+</div>
+
+<script>
+  $('#start_date').datepicker({
+    dateFormat: 'dd-mm-yy',
+    minDate: 0,
+    maxDate: '3m',
+    onSelect: function(selected) {
+      $('#end_date').datepicker("option", "minDate", selected);
+      $('#end_date').attr("disabled", false);
+    }
+  });
+
+  $('#end_date').datepicker({
+    dateFormat: 'dd-mm-yy',
+    minDate: 0,
+    maxDate: '3m',
+    onSelect: function(selected) {
+      $('#start_date').datepicker("option", "maxDate", selected);
+    }
+  });
+
+</script>
